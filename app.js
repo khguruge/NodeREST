@@ -1,24 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const app = express();
+require('dotenv/config');
 
+app.use(bodyParser.json());
 //Middleware
 
-app.use('/posts', () => {
-    console.log("this is middleware");
-});
+// app.use('/posts', () => {
+//     console.log("this is middleware");
+// });
 
-//Routes
+const postRoute = require('./routes/posts');
+const userRoute = require('./routes/user');
+app.use('/posts', postRoute);
+app.use('/user', userRoute);
+
 app.get('/',(req,res) => {
     res.send('We are on home');
 });
 
-app.get('/posts',(req,res) => {
-    res.send('We are on posts');
-});
-
 //DB Connect
-mongoose.connect('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false', () => {
+mongoose.connect(process.env.DB_CONNECTION,{useNewUrlParser: true}, () => {
     console.log("MongoDB Connected");
 })
 
